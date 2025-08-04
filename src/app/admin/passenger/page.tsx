@@ -9,7 +9,7 @@ import AdminMenu from "@/components/AdminMenu";
 import Link from "next/link"; // for using link tag otherwise link tag will not work
 
 interface Passenger {
-  PASSENGERID: number;
+  _id: string;
   NAME: string;
   ADDRESS: string;
 }
@@ -37,13 +37,9 @@ const PassengerPage = () => {
       });
 
       if (res.ok) {
-        const data:any[] = await res.json();
-        const passengerObjects:Passenger[] = data.map((row) => ({
-          PASSENGERID: row[0],
-          NAME: row[1],
-          ADDRESS: row[2],
-        }));
-        setPassengerList(passengerObjects);
+        const data:Passenger[] = await res.json();
+        
+        setPassengerList(data);
       } else {
         console.error("Failed to fetch passenger list");
       }
@@ -207,8 +203,8 @@ const PassengerPage = () => {
             </thead>
             <tbody>
               {passengerList.map((passenger) => (
-                <tr key={passenger.PASSENGERID} className="border-b hover:bg-gray-50">
-                  <td className="py-2 px-4">{passenger.PASSENGERID}</td>
+                <tr key={passenger._id} className="border-b hover:bg-gray-50">
+                  <td className="py-2 px-4">{passenger._id}</td>
                   <td className="py-2 px-4">{passenger.NAME}</td>
                   <td className="py-2 px-4">{passenger.ADDRESS}</td>
                   <td className="py-2 px-4 flex gap-2"> No actions needed
