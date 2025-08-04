@@ -7,7 +7,7 @@ import Navbar from "@/components/NavBar";
 import AdminMenu from "@/components/AdminMenu";
 
 interface Driver {
-    DRIVERID: number;
+    _id: string;
     CONTACTINFO: string;
     EXPERIENCE: number;
     NAME: string;
@@ -24,7 +24,7 @@ const DriverPage = () => {
   const [licenseNumber, setLicenseNumber] = useState("");
   const [contactInfo, setContactInfo] = useState("");
   const [experience, setExperience] = useState<number | "">("");
-  const [editId, setEditId] = useState<number | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
 
   // Fetch driver data from the API
   const fetchDrivers = async () => {
@@ -39,15 +39,9 @@ const DriverPage = () => {
       });
 
       if (res.ok) {
-        const data:any[] = await res.json();
-        const driverObjects: Driver[] = data.map((row) => ({
-          DRIVERID: row[0],
-          NAME: row[1],
-          LICENSENUMBER: row[2],
-          CONTACTINFO: row[3],
-          EXPERIENCE: row[4],
-        }));
-        setDriverList(driverObjects);
+        const data:Driver[] = await res.json();
+       
+        setDriverList(data);
       } else {
         console.error("Failed to fetch driver list");
       }
@@ -106,7 +100,7 @@ const DriverPage = () => {
   };
 
   // Delete driver
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     const token = localStorage.getItem("token");
     if (!window.confirm("Delete this driver?")) return;
     const res = await fetch(`http://localhost:8000/api/driver/${id}`, {
@@ -123,7 +117,7 @@ const DriverPage = () => {
 
   // Edit driver
   const handleEdit = (driver: Driver) => {
-    setEditId(driver.DRIVERID);
+    setEditId(driver._id);
     setName(driver.NAME);
     setLicenseNumber(driver.LICENSENUMBER);
     setContactInfo(driver.CONTACTINFO);
@@ -224,27 +218,28 @@ const DriverPage = () => {
                 <th className="py-2 px-4 text-left">License Number</th>
                 <th className="py-2 px-4 text-left">Contact Info</th>
                 <th className="py-2 px-4 text-left">Experience</th>
-                <th className="py-2 px-4 text-left">Update/Delete</th>
+                <th className="py-2 px-4 text-left">Action</th>
               </tr>
             </thead>
             <tbody>
               {driverList.map((driver) => (
-                <tr key={driver.DRIVERID} className="border-b hover:bg-gray-50">
-                  <td>{driver.DRIVERID}</td>
+                <tr key={driver._id} className="border-b hover:bg-gray-50">
+                  <td>{driver._id}</td>
+                  <td>{driver.NAME}</td> 
+                  <td>{driver.LICENSENUMBER}</td>
                   <td>{driver.CONTACTINFO}</td>
                   <td>{driver.EXPERIENCE}</td>
-                  <td>{driver.NAME}</td>
-                  <td>{driver.LICENSENUMBER}</td>
+
                   <td className="py-2 px-4 flex gap-2">
                     <button
                       onClick={() => handleEdit(driver)}
-                      className="text-blue-600 underline"
+                      className="text-blue-600 bg-blue-100 px-2 py-1 rounded hover:bg-blue-200"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(driver.DRIVERID)}
-                      className="text-red-600 underline"
+                      onClick={() => handleDelete(driver._id)}
+                      className="text-red-600 bg-red-100 px-2 py-1 rounded hover:bg-red-200"
                     >
                       Delete
                     </button>
@@ -256,7 +251,7 @@ const DriverPage = () => {
         )}
 
         <div>
-          <LogoutButton />
+          
         </div>
       </div>
     </div>

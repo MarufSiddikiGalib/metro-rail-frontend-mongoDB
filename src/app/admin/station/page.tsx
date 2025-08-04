@@ -8,11 +8,11 @@ import AdminMenu from "@/components/AdminMenu";
 import Link from "next/link";
 
 interface Station {
-  STATIONID: number;
+  _id: string;
   STATIONNAME: string;
   LOCATION: string;
   PLATFORM: string;
-  ZONEID: number;
+  ZONEID: string;
 }
 
 const StationPage = () => {
@@ -24,8 +24,8 @@ const StationPage = () => {
   const [stationName, setStationName] = useState("");
   const [location, setLocation] = useState("");
   const [platform, setPlatform] = useState("");
-  const [zoneId, setZoneId] = useState<number | "">("");
-  const [editId, setEditId] = useState<number | null>(null);
+  const [zoneId, setZoneId] = useState<string | "">("");
+  const [editId, setEditId] = useState<string | null>(null);
 
   // Fetch station data from the API
   const fetchStations = async () => {
@@ -40,15 +40,9 @@ const StationPage = () => {
       });
 
       if (res.ok) {
-        const data: any[] = await res.json();
-        const stationObjects:Station[] = data.map((row: any[]) => ({
-          STATIONID: row[0],
-          STATIONNAME: row[1],
-          LOCATION: row[2],
-          PLATFORM: row[3],
-          ZONEID: row[4],
-        }));
-        setStationList(stationObjects);
+        const data: Station[] = await res.json();
+
+        setStationList(data);
       } else {
         console.error("Failed to fetch station list");
       }
@@ -81,7 +75,7 @@ const StationPage = () => {
       stationName,
       location,
       platform,
-      zoneId: Number(zoneId),
+      zoneId: String(zoneId),
     });
 
     const res = await fetch(url, {
@@ -107,7 +101,7 @@ const StationPage = () => {
   };
 
   // Delete station
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     const token = localStorage.getItem("token");
     if (!window.confirm("Delete this station?")) return;
     const res = await fetch(`http://localhost:8000/api/station/${id}`, {
@@ -124,7 +118,7 @@ const StationPage = () => {
 
   // Edit station
   const handleEdit = (station: Station) => {
-    setEditId(station.STATIONID);
+    setEditId(station._id);
     setStationName(station.STATIONNAME);
     setLocation(station.LOCATION);
     setPlatform(station.PLATFORM);
@@ -193,9 +187,9 @@ const StationPage = () => {
             <div>
               <label className="block text-sm mb-1">Zone ID</label>
               <input
-                type="number"
+                type="string"
                 value={zoneId}
-                onChange={(e) => setZoneId(e.target.value ? Number(e.target.value) : "")}
+                onChange={(e) => setZoneId(e.target.value ? String(e.target.value) : "")}
                 className="border rounded px-2 py-1"
                 required
                 min={1}
@@ -241,8 +235,8 @@ const StationPage = () => {
               </thead>
               <tbody>
                 {stationList.map((station) => (
-                  <tr key={station.STATIONID} className="border-b hover:bg-gray-50">
-                    <td className="py-2 px-4">{station.STATIONID}</td>
+                  <tr key={station._id} className="border-b hover:bg-gray-50">
+                    <td className="py-2 px-4">{station._id}</td>
                     <td className="py-2 px-4">{station.STATIONNAME}</td>
                     <td className="py-2 px-4">{station.LOCATION}</td>
                     <td className="py-2 px-4">{station.PLATFORM}</td>
@@ -250,13 +244,13 @@ const StationPage = () => {
                     <td className="py-2 px-4 flex gap-2">
                       <button
                         onClick={() => handleEdit(station)}
-                        className="text-blue-600 underline hover:text-blue-800 transition"
+                        className="text-blue-600 bg-blue-100 px-2 py-1 rounded hover:bg-blue-200 transition"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(station.STATIONID)}
-                        className="text-red-600 underline hover:text-red-800 transition"
+                        onClick={() => handleDelete(station._id)}
+                        className="text-red-600 bg-red-100 px-2 py-1 rounded hover:bg-red-200 transition"
                       >
                         Delete
                       </button>
@@ -268,7 +262,7 @@ const StationPage = () => {
           )}
 
           <div className="mt-6">
-            <LogoutButton />
+            
           </div>
         </div>
       </div>

@@ -213,7 +213,6 @@ const ZonePage = () => {
         )}
 
       <div>
-      <LogoutButton />
       
     </div>
 
