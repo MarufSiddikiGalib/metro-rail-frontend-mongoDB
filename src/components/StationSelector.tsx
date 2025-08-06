@@ -1,15 +1,15 @@
 import React from "react";
 
 export interface Station {
-  stationId: number;
+  _id: string;
   name: string;
 }
 
 interface StationSelectorProps {
   label: string;
   icon: React.ReactNode;
-  value: number | undefined;
-  onChange: (stationId: number) => void;
+  value: string | undefined;
+  onChange: (_id: string) => void;
   options: Station[];
   disabled?: boolean;
 }
@@ -43,7 +43,7 @@ export default function StationSelector({
       <span style={{ fontWeight: 500, marginRight: 11 }}>{label}</span>
       <select
         value={value ?? ""}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => onChange(String(e.target.value))}
         disabled={disabled}
         style={{
           flex: 1,
@@ -67,14 +67,14 @@ export default function StationSelector({
         {options
           .filter(
             (station, idx, arr) =>
-              station.stationId !== undefined &&
-              station.stationId !== null &&
-              arr.findIndex(s => s.stationId === station.stationId) === idx
+              station._id !== undefined &&
+              station._id !== null &&
+              arr.findIndex(s => s._id === station._id) === idx
           )
           .map((station) => (
             <option
-              key={station.stationId ?? station.name}
-              value={station.stationId}
+              key={station._id ?? station.name}
+              value={station._id}
               style={{ color: "#222", background: "#fff" }}
             >
               {station.name}

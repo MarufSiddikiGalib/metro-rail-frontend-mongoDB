@@ -2,20 +2,20 @@ import { Station } from "../components/StationSelector";
 
 
 export async function fetchStations(): Promise<Station[]> {
-    const res = await fetch('http://localhost:8000/api/stations');
-    if (!res.ok) throw new Error('Failed to fetch stations');
-    const rawStations = await res.json(); // Array of arrays
-  
-    // Convert array of arrays to array of objects
-    return rawStations.map((arr: any[]) => ({
-      stationId: arr[0],
-      name: arr[1], // or arr[2] if you want the short name
-    }));
-  }
+  const res = await fetch('http://localhost:8000/api/stations');
+  if (!res.ok) throw new Error('Failed to fetch stations');
+  const rawStations = await res.json(); // Array of station objects
+
+  // Map backend object to Station interface expected by StationSelector
+  return rawStations.map((station: any) => ({
+    _id: station._id, // use MongoDB ID as _id
+    name: station.STATIONNAME, // use STATIONNAME as 'name'
+  }));
+}
 
 export async function calculateFare(
-  fromStationId: number,
-  toStationId: number,
+  fromStationId: string,
+  toStationId: string,
   travellerType: string,
   ticketType1: string,
   ticketType2: string

@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface TravellerSelectorProps {
-  value: { count: number; type: 'Adult' | 'Child' };
-  onChange: (val: { count: number; type: 'Adult' | 'Child' }) => void;
+  value: { count: string; type: 'Adult' | 'Child' };
+  onChange: (val: { count: string; type: 'Adult' | 'Child' }) => void;
 
   // value: { count: number; type: 'Adult' | 'Child' };
   // onChange: (val: { count: number; type: 'Adult' | 'Child' }) => void;
@@ -13,7 +13,7 @@ export default function TravellerSelector({ value, onChange }: TravellerSelector
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
       <select
         value={value.count}
-        onChange={e => onChange({ ...value, count: Number(e.target.value) })}
+        onChange={e => onChange({ ...value, count: String(e.target.value) })}
         style={{
           border: '1.5px solid #2b4377',
           borderRadius: 7,

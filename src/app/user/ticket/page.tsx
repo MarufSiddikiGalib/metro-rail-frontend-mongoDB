@@ -19,9 +19,9 @@ import {
 type TicketState = {
   type2: "OneWay" | "Round" | "MultiCity";
   type1: "Economy" | "Business";
-  fromStationId?: number;
-  toStationId?: number;
-  traveller: { count: number; type: "Adult" | "Child" };
+  fromStationId?: string;
+  toStationId?: string;
+  traveller: { count: string; type: "Adult" | "Child" };
   fare?: number;
   distance?: number;
   departureDate?: string;
@@ -63,9 +63,9 @@ export default function TicketFarePage() {
   const [type2, setType2] = useState<"OneWay" | "Round" | "MultiCity">("OneWay");
   const [type1, setType1] = useState<"Economy" | "Business">("Economy");
   const [stations, setStations] = useState<Station[]>([]);
-  const [fromStationId, setFromStationId] = useState<number | undefined>();
-  const [toStationId, setToStationId] = useState<number | undefined>();
-  const [traveller, setTraveller] = useState<{ count: number; type: "Adult" | "Child" }>({ count: 1, type: "Adult" });
+  const [fromStationId, setFromStationId] = useState<string | undefined>();
+  const [toStationId, setToStationId] = useState<string | undefined>();
+  const [traveller, setTraveller] = useState<{ count: string; type: "Adult" | "Child" }>({ count: "1", type: "Adult" });
   const [fare, setFare] = useState<number | null>(null);
   const [distance, setDistance] = useState<number | null>(null);
   const [fareLoading, setFareLoading] = useState<boolean>(false);
@@ -179,8 +179,8 @@ export default function TicketFarePage() {
       const { passengerId } = await registerPassenger(data.name, data.address);
 
       // 2. Buy ticket
-      const departureStation = stations.find((s) => s.stationId === fromStationId)?.name || "";
-      const destinationStation = stations.find((s) => s.stationId === toStationId)?.name || "";
+      const departureStation = stations.find((s) => s._id === fromStationId)?.name || "";
+      const destinationStation = stations.find((s) => s._id === toStationId)?.name || "";
       const today = new Date();
       const reservationDate = departureDate;
       const reservationTime = today.toTimeString().slice(0, 8);
