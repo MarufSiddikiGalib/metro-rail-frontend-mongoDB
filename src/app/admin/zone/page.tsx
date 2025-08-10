@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import LogoutButton from "@/components/LogoutButton"; //Components
 import Navbar from "@/components/NavBar";
 import AdminMenu from "@/components/AdminMenu";
 
@@ -28,7 +27,7 @@ const ZonePage = () => {
       const token = localStorage.getItem("token");
 
       try {
-        const res = await fetch("http://localhost:8000/api/zone", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/zone`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -62,8 +61,8 @@ const ZonePage = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     const url = editId
-      ? `http://localhost:8000/api/zone/${editId}`
-      : "http://localhost:8000/api/zone";
+      ? `${process.env.NEXT_PUBLIC_API_URL}api/zone/${editId}`
+      : `${process.env.NEXT_PUBLIC_API_URL}api/zone`;
     const method = editId ? "PUT" : "POST";
     const body = JSON.stringify({ ZoneName: name });
 
@@ -90,7 +89,7 @@ const ZonePage = () => {
   const handleDelete = async (id: string) => {
     const token = localStorage.getItem("token");
     if (!window.confirm("Delete this Zone ?")) return;
-    const res = await fetch(`http://localhost:8000/api/zone/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/zone/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

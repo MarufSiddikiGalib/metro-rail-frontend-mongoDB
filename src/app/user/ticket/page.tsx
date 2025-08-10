@@ -185,10 +185,23 @@ export default function TicketFarePage() {
       const reservationDate = departureDate;
       const reservationTime = today.toTimeString().slice(0, 8);
 
+
+  // console.log({
+  //     type1,
+  //     type2,
+  //     passengerId,
+  //     reservationDate,
+  //     reservationTime,
+  //     fare,
+  //     departureStation,
+  //     destinationStation
+  //   });
+
+
       const ticket = await buyTicket(
         type1,
         type2,
-        passengerId,
+        String(passengerId),
         reservationDate,
         reservationTime,
         fare,
@@ -207,6 +220,8 @@ export default function TicketFarePage() {
   async function handlePaymentComplete() {
     if (!ticketResult) return;
     const today = new Date();
+
+    try {
     await storeTransaction({
       amount: fare ?? 0,
       paymentDate: today.toISOString().slice(0, 10),
@@ -229,7 +244,16 @@ export default function TicketFarePage() {
       link.click();
       document.body.removeChild(link);
     }
+  }catch (err) {
+  if (err instanceof Error) {
+    console.error(err.message);
+    alert("Error: " + err.message);
+  } else {
+    console.error(err);
+    alert("An unknown error occurred");
   }
+  }
+}
 
   return (
     <div className="bg-white min-h-screen w-screen m-0 p-0">

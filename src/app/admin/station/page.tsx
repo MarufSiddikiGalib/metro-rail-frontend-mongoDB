@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import LogoutButton from "@/components/LogoutButton";
 import Navbar from "@/components/NavBar";
 import AdminMenu from "@/components/AdminMenu";
 import Link from "next/link";
@@ -33,7 +32,7 @@ const StationPage = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("http://localhost:8000/api/station", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/station`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -68,8 +67,8 @@ const StationPage = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     const url = editId
-      ? `http://localhost:8000/api/station/${editId}`
-      : "http://localhost:8000/api/station";
+      ? `${process.env.NEXT_PUBLIC_API_URL}api/station/${editId}`
+      : `${process.env.NEXT_PUBLIC_API_URL}api/station`;
     const method = editId ? "PUT" : "POST";
     const body = JSON.stringify({
       stationName,
@@ -104,7 +103,7 @@ const StationPage = () => {
   const handleDelete = async (id: string) => {
     const token = localStorage.getItem("token");
     if (!window.confirm("Delete this station?")) return;
-    const res = await fetch(`http://localhost:8000/api/station/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/station/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

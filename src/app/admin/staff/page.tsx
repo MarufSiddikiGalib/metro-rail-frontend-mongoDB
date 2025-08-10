@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import LogoutButton from "@/components/LogoutButton"; //Components
 import Navbar from "@/components/NavBar"; //Components
 import AdminMenu from "@/components/AdminMenu"; //Components
 
@@ -32,7 +31,7 @@ const StaffPage = () => {
       const token = localStorage.getItem("token");
 
       try {
-        const res = await fetch("http://localhost:8000/api/staff", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/staff`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -66,8 +65,8 @@ const StaffPage = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     const url = editId
-      ? `http://localhost:8000/api/staff/${editId}`
-      : "http://localhost:8000/api/staff";
+      ? `${process.env.NEXT_PUBLIC_API_URL}api/staff/${editId}`
+      : `${process.env.NEXT_PUBLIC_API_URL}api/staff`;
     const method = editId ? "PUT" : "POST";
     const body = JSON.stringify({ role, assignedShift });
 
@@ -95,7 +94,7 @@ const StaffPage = () => {
   const handleDelete = async (id: string) => {
     const token = localStorage.getItem("token");
     if (!window.confirm("Delete this staff member?")) return;
-    const res = await fetch(`http://localhost:8000/api/staff/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/staff/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -229,7 +228,6 @@ const StaffPage = () => {
         )}
 
       <div>
-      <LogoutButton />
       
     </div>
 

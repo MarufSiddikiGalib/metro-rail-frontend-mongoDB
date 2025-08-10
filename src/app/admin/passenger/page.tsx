@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import LogoutButton from "@/components/LogoutButton"; // Adjust path if needed
 import Navbar from "@/components/NavBar";
 import AdminMenu from "@/components/AdminMenu";
 
@@ -30,7 +29,7 @@ const PassengerPage = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("http://localhost:8000/api/passenger", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/passenger`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -228,7 +227,7 @@ const PassengerPage = () => {
         )}
 
         <div>
-          <LogoutButton />
+
         </div>
       </div>
     </div>

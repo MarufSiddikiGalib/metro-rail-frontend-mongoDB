@@ -68,7 +68,7 @@ export default function MapsPage() {
   const [leafletComponents, setLeafletComponents] = useState<any | null>(null);
   useEffect(() => {
     setIsClient(true); // Only render map on client
-    fetch("http://localhost:8000/api/stations")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}api/stations`)
       .then(res => res.json())
       .then(setStations);
     // dynamically import react-leaflet components
@@ -84,16 +84,26 @@ export default function MapsPage() {
     });
   }, []);
 
+  
   // Prepare station data with coordinates
-  const stationsWithCoords = stations
-    .map(([id, name, displayName, platform]: any) => {
-      const coords = stationCoords[name];
-      if (coords) {
-        return { id, name, lat: coords.lat, lng: coords.lng, displayName, platform };
-      }
-      return null;
-    })
-    .filter((s): s is { id: number; name: string; lat: number; lng: number; displayName: string; platform: string } => !!s);
+ const stationsWithCoords = stations
+  .map((station: any) => {
+    const name = station.STATIONNAME;
+    const coords = stationCoords[name];
+    if (coords) {
+      return {
+        id: station._id, // or station._id?.$oid if MongoDB exports with $oid
+        name,
+        lat: coords.lat,
+        lng: coords.lng,
+        displayName: name,
+        platform: station.PLATFORM
+      };
+    }
+    return null;
+  })
+  .filter((s): s is { id: string; name: string; lat: number; lng: number; displayName: string; platform: string } => !!s);
+
 
   const orderedStations = orderedNames
     .map(name => stationsWithCoords.find(s => s.name === name))

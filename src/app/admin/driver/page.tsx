@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import LogoutButton from "@/components/LogoutButton"; // Adjust path if needed
 import Navbar from "@/components/NavBar";
 import AdminMenu from "@/components/AdminMenu";
 
@@ -32,7 +31,7 @@ const DriverPage = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("http://localhost:8000/api/driver", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/driver`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,8 +66,8 @@ const DriverPage = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     const url = editId
-      ? `http://localhost:8000/api/driver/${editId}`
-      : "http://localhost:8000/api/driver";
+      ? `${process.env.NEXT_PUBLIC_API_URL}api/driver/${editId}`
+      : `${process.env.NEXT_PUBLIC_API_URL}api/driver`;
     const method = editId ? "PUT" : "POST";
     const body = JSON.stringify({
       Name: name,
@@ -103,7 +102,7 @@ const DriverPage = () => {
   const handleDelete = async (id: string) => {
     const token = localStorage.getItem("token");
     if (!window.confirm("Delete this driver?")) return;
-    const res = await fetch(`http://localhost:8000/api/driver/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/driver/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

@@ -8,12 +8,12 @@ import AdminMenu from "@/components/AdminMenu";
 import Link from "next/link";
 
 interface Transaction {
-  TRANSACTIONID: number;
-  AMOUNT: number;
-  PAYMENTDATE: string; // e.g., "2025-06-24"
-  PAYMENTMETHOD1: string;
-  PAYMENTMETHOD2: string;
-  TICKETNUMBER: number;
+  _id: string; // MongoDB ObjectId
+  amount: number;
+  paymentDate: string; // e.g., "2025-06-24"
+  paymentMethod1: string;
+  paymentMethod2: string;
+  ticketNumber: number;
 }
 
 const TransactionPage = () => {
@@ -27,24 +27,15 @@ const TransactionPage = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("http://localhost:8000/api/transactions", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/transactions`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (res.ok) {
-        const data: any[] = await res.json();
-        // If data is array of arrays, map to objects
-        const transactionObjects:Transaction[] = data.map((row: any[]) => ({
-          TRANSACTIONID: row[0],
-          AMOUNT: row[1],
-          PAYMENTDATE: row[2] ? String(row[2]).slice(0, 10) : "",
-          PAYMENTMETHOD1: row[3],
-          PAYMENTMETHOD2: row[4],
-          TICKETNUMBER: row[5],
-        }));
-        setTransactionList(transactionObjects);
+        const data: Transaction[] = await res.json();
+        setTransactionList(data);
       } else {
         console.error("Failed to fetch transaction list");
       }
@@ -113,13 +104,13 @@ const TransactionPage = () => {
                 </thead>
                 <tbody>
                   {transactionList.map((transaction) => (
-                    <tr key={transaction.TRANSACTIONID} className="border-b hover:bg-gray-50">
-                      <td className="py-2 px-4">{transaction.TRANSACTIONID}</td>
-                      <td className="py-2 px-4">{transaction.AMOUNT}</td>
-                      <td className="py-2 px-4">{transaction.PAYMENTDATE}</td>
-                      <td className="py-2 px-4">{transaction.PAYMENTMETHOD1}</td>
-                      <td className="py-2 px-4">{transaction.PAYMENTMETHOD2}</td>
-                      <td className="py-2 px-4">{transaction.TICKETNUMBER}</td>
+                    <tr key={transaction._id} className="border-b hover:bg-gray-50">
+                      <td className="py-2 px-4">{transaction._id}</td>
+                      <td className="py-2 px-4">{transaction.amount}</td>
+                      <td className="py-2 px-4">{transaction.paymentDate}</td>
+                      <td className="py-2 px-4">{transaction.paymentMethod1}</td>
+                      <td className="py-2 px-4">{transaction.paymentMethod2}</td>
+                      <td className="py-2 px-4">{transaction.ticketNumber}</td>
                       <td className="py-2 px-4">No actions needed</td>
                     </tr>
                   ))}

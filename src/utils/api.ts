@@ -2,7 +2,7 @@ import { Station } from "../components/StationSelector";
 
 
 export async function fetchStations(): Promise<Station[]> {
-  const res = await fetch('http://localhost:8000/api/stations');
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/stations`);
   if (!res.ok) throw new Error('Failed to fetch stations');
   const rawStations = await res.json(); // Array of station objects
 
@@ -20,7 +20,7 @@ export async function calculateFare(
   ticketType1: string,
   ticketType2: string
 ): Promise<{ fare: number; distance: number }> {
-  const res = await fetch('http://localhost:8000/api/fare', {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/fare`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -39,7 +39,7 @@ export async function registerPassenger(
   name: string,
   address: string
 ): Promise<{ passengerId: number }> {
-  const res = await fetch('http://localhost:8000/api/passenger-registration', {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/passenger-registration`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, address })
@@ -51,14 +51,14 @@ export async function registerPassenger(
 export async function buyTicket(
   type1: string,
   type2: string,
-  passengerId: number,
+  passengerId: string,
   reservationDate: string,
   reservationTime: string,
   fare: number,
   departureStation: string,
   destinationStation: string
 ): Promise<any> {
-  const res = await fetch('http://localhost:8000/api/ticket/buy', {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/ticket/buy`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -72,7 +72,11 @@ export async function buyTicket(
       destinationStation
     })
   });
-  if (!res.ok) throw new Error('Ticket purchase failed');
+  if (!res.ok) {
+  const errorText = await res.text();
+  console.error("Ticket API error:", res.status, errorText);
+  throw new Error('Ticket purchase failed');
+}
   return await res.json();
 }
 
@@ -88,9 +92,9 @@ export async function storeTransaction({
   paymentDate: string;
   paymentMethod1: string;
   paymentMethod2?: string;
-  ticketNumber: number;
+  ticketNumber: string;
 }) {
-  const res = await fetch("http://localhost:8000/api/transactions", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/transactions`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

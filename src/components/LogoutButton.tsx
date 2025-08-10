@@ -7,7 +7,7 @@ export default function LogoutButton() {
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
     if (token) {
-      await fetch("http://localhost:8000/api/admin/logout", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/admin/logout`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });

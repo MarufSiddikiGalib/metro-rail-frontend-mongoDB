@@ -192,7 +192,7 @@ export default function AdminDashboard() {
   const fetchStats = async (token: string) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/api/admin/dashboard-stats", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/dashboard-stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {

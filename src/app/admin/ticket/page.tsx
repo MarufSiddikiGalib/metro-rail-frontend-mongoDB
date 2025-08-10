@@ -2,17 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import LogoutButton from "@/components/LogoutButton";
 import Navbar from "@/components/NavBar";
 import AdminMenu from "@/components/AdminMenu";
 import Link from "next/link";
 
 interface Ticket {
-  TICKETNUMBER: number;
-  TYPE1: string;
-  TYPE2: string;
-  PASSENGERID: number;
-  STATUS: string; // assuming ticket has a status field for "Cancelled" or "Expired"
+  _id: string;
+  type1: string;
+  type2: string;
+  passengerId: string;
+  status: string; // assuming ticket has a status field for "Cancelled" or "Expired"
 }
 
 const TicketPage = () => {
@@ -26,23 +25,17 @@ const TicketPage = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("http://localhost:8000/api/tickets", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/tickets`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (res.ok) {
-        const data: any[] = await res.json();
+        const data: Ticket[] = await res.json();
         // Assume data is a 2D array as in your stations page
-        const ticketObjects:Ticket[] = data.map((row) => ({
-          TICKETNUMBER: row[0],
-          TYPE1: row[1],
-          TYPE2: row[2],
-          PASSENGERID: row[3],
-          STATUS: row[4], // Ensure your backend returns this field
-        }));
-        setTicketList(ticketObjects);
+       
+        setTicketList(data);
       } else {
         console.error("Failed to fetch ticket list");
       }
@@ -72,7 +65,7 @@ const TicketPage = () => {
     // }
     const token = localStorage.getItem("token");
     if (!window.confirm("Delete this ticket? This action cannot be undone.")) return;
-    const res = await fetch(`http://localhost:8000/api/tickets/${ticket.TICKETNUMBER}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/tickets/${ticket._id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -127,12 +120,12 @@ const TicketPage = () => {
               </thead>
               <tbody>
                 {ticketList.map((ticket) => (
-                  <tr key={ticket.TICKETNUMBER} className="border-b hover:bg-gray-50">
-                    <td className="py-2 px-4">{ticket.TICKETNUMBER}</td>
-                    <td className="py-2 px-4">{ticket.TYPE1}</td>
-                    <td className="py-2 px-4">{ticket.TYPE2}</td>
-                    <td className="py-2 px-4">{ticket.PASSENGERID}</td>
-                    <td className="py-2 px-4">{ticket.STATUS}</td>
+                  <tr key={ticket._id} className="border-b hover:bg-gray-50">
+                    <td className="py-2 px-4">{ticket._id}</td>
+                    <td className="py-2 px-4">{ticket.type1}</td>
+                    <td className="py-2 px-4">{ticket.type2}</td>
+                    <td className="py-2 px-4">{ticket.passengerId}</td>
+                    <td className="py-2 px-4">{ticket.status}</td>
                     <td className="py-2 px-4">
                       <button
                         onClick={() => handleDelete(ticket)}
@@ -163,7 +156,6 @@ const TicketPage = () => {
           )}
 
           <div className="mt-6">
-            <LogoutButton />
           </div>
         </div>
       </div>

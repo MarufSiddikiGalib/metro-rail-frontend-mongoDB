@@ -112,7 +112,7 @@ export default function JourneyPlannerPage() {
   const [leafletComponents, setLeafletComponents] = useState<any | null>(null);
   useEffect(() => {
     setIsClient(true);
-    fetch("http://localhost:8000/api/stations")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}api/stations`)
       .then(res => res.json())
       .then(setStations)
       .catch(() => setStations([]));
@@ -128,12 +128,23 @@ export default function JourneyPlannerPage() {
 
   // Map backend stations to coordinates (using your mapping)
   const stationsWithCoords = stations
-    .map(([id, name, displayName, platform]: any) => {
-      const coords = stationCoords[name];
-      if (coords) return { id, name, lat: coords.lat, lng: coords.lng, displayName, platform };
-      return null;
-    })
-    .filter(Boolean);
+  .map((station: any) => {
+    // use the actual property names from your backend
+    const name = station.STATIONNAME || station.name;
+    const coords = stationCoords[name];
+    if (coords) {
+      return {
+        id: station._id, // or station._id?.$oid if you get $oid from Mongo
+        name,
+        lat: coords.lat,
+        lng: coords.lng,
+        displayName: name,
+        platform: station.PLATFORM || station.platform,
+      };
+    }
+    return null;
+  })
+  .filter(Boolean);
 
   // Ordered stations for polyline etc
   const orderedStations = orderedNames
