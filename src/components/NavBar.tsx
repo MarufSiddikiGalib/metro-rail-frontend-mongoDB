@@ -19,15 +19,14 @@ const menuLinks = [
 export default function Navbar() {
   const pathname = usePathname();
   const [username, setUsername] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Read from localStorage on mount
     if (typeof window !== "undefined") {
       setUsername(localStorage.getItem("username"));
     }
   }, []);
 
-  // Optionally, add a storage event listener for cross-tab logout/login
   useEffect(() => {
     const handler = () => setUsername(localStorage.getItem("username"));
     window.addEventListener("storage", handler);
@@ -42,15 +41,19 @@ export default function Navbar() {
         headers: { Authorization: `Bearer ${token}` },
       });
     }
-
     localStorage.removeItem("token");
     localStorage.removeItem("username");
     setUsername(null);
-    window.location.href = "/user/login"; // Redirect to login page
+    window.location.href = "/user/login";
   };
 
+  // Close mobile menu on navigation
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
   return (
-    <nav className="bg-white w-screen min-h-[68px] flex items-center border-b border-[#e4e6f1] px-4 py-0 sticky top-0 z-[100]">
+    <nav className="bg-white w-screen min-h-[60px] flex items-center border-b border-[#e4e6f1] px-4 py-0 sticky top-0 z-[100]">
       {/* Logo and site name */}
       <Link href="/" className="flex items-center no-underline mr-5 ">
         <Image
@@ -65,8 +68,8 @@ export default function Navbar() {
         </span>
       </Link>
 
-      {/* Menu links */}
-      <div className="flex-1 flex items-center gap-1 ">
+      {/* Desktop menu */}
+      <div className="flex-1 items-center gap-1 hidden md:flex">
         {menuLinks.map((link) => (
           <Link
             key={link.name}
@@ -81,27 +84,29 @@ export default function Navbar() {
           </Link>
         ))}
       </div>
+      {/* Hamburger icon for mobile */}
+      <button
+        className="ml-auto flex md:hidden items-center p-2"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Open menu"
+      >
+        <svg width={28} height={28} fill="none" viewBox="0 0 24 24">
+          <path
+            stroke="#2b4377"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d={
+              mobileMenuOpen
+                ? "M6 18L18 6M6 6l12 12"
+                : "M4 6h16M4 12h16M4 18h16"
+            }
+          />
+        </svg>
+      </button>
 
-      {/* Search bar */}
-      {/* <div className="bg-[#e4e6f1] rounded-lg flex items-center mr-2 px-2 min-w-[140px] max-w-[200px]">
-        <span className="mr-1 text-[#555]">
-          <svg width={14} height={14} viewBox="0 0 24 24" fill="none">
-            <path d="M21 21l-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14z" stroke="#222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </span>
-        <input
-          placeholder="Search here"
-          className="border-none outline-none bg-transparent text-[13px] w-full text-[#222]"
-        />
-        <span className="text-[#888] text-xs ml-1 px-1 bg-[#f1f2f9] rounded">
-          ⌘ F
-        </span>
-      </div> */}
-
-      {/* Account buttons */}
-      
-      {/* Account/User section */}
-      <div className="flex items-center gap-1">
+      {/* Desktop account buttons */}
+      <div className="ml-4 items-center gap-1 hidden md:flex">
         {username ? (
           <div className="flex items-center gap-2">
             <span className="font-semibold text-[#2b4377]">{username}</span>
@@ -114,22 +119,106 @@ export default function Navbar() {
           </div>
         ) : (
           <>
-
-        <Link
-          href="/user/signup"
-          className="bg-white text-[#222] font-semibold border-[1.4px] border-[#222] rounded-lg px-3 py-[5px] mr-1 text-[15px] cursor-pointer hover:bg-[#f7f8fa] transition"
-        >
-          CREATE ACCOUNT
-        </Link>
-        <Link
-          href="/user/login"
-          className="bg-white text-[#222] font-semibold border-[1.4px] border-[#222] rounded-lg px-4 py-[5px] text-[15px] cursor-pointer hover:bg-[#f7f8fa] transition"
-        >
-          LOGIN
-        </Link>
-        </>
+            <Link
+              href="/user/signup"
+              className="bg-white text-[#222] font-semibold border-[1.4px] border-[#222] rounded-lg px-3 py-[5px] mr-1 text-[15px] cursor-pointer hover:bg-[#f7f8fa] transition"
+            >
+              CREATE ACCOUNT
+            </Link>
+            <Link
+              href="/user/login"
+              className="bg-white text-[#222] font-semibold border-[1.4px] border-[#222] rounded-lg px-4 py-[5px] text-[15px] cursor-pointer hover:bg-[#f7f8fa] transition"
+            >
+              LOGIN
+            </Link>
+          </>
         )}
       </div>
+
+      {/* Mobile menu (drawer) */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[200] bg-black bg-opacity-30 flex md:hidden">
+          <div className="w-4/5 max-w-xs bg-white shadow-lg h-full p-6 animate-slide-in">
+            {/* Close button */}
+            <button
+              className="mb-4 flex items-center"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <svg width={28} height={28} viewBox="0 0 24 24" fill="none">
+                <path
+                  stroke="#2b4377"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <div className="flex flex-col gap-4">
+              {menuLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`font-medium text-[18px] pb-[1px] no-underline border-b-2  hover:text-[#e53935] transition ${
+                    pathname === link.href
+                      ? "text-[#e53935] border-[#e53935]"
+                      : "text-[#222] border-transparent"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+              <div className="border-t my-3"></div>
+              {username ? (
+                <div className="flex flex-col gap-2">
+                  <span className="font-semibold text-[#2b4377]">{username}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-[#e53935] text-white font-semibold rounded-lg px-3 py-2 text-[16px] hover:bg-red-600 transition"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <Link
+                    href="/user/signup"
+                    className="bg-white text-[#222] font-semibold border-[1.4px] border-[#222] rounded-lg px-3 py-2 text-[16px] cursor-pointer hover:bg-[#f7f8fa] transition"
+                  >
+                    CREATE ACCOUNT
+                  </Link>
+                  <Link
+                    href="/user/login"
+                    className="bg-white text-[#222] font-semibold border-[1.4px] border-[#222] rounded-lg px-4 py-2 text-[16px] cursor-pointer hover:bg-[#f7f8fa] transition"
+                  >
+                    LOGIN
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Overlay click closes menu */}
+          <div className="flex-1" onClick={() => setMobileMenuOpen(false)}></div>
+        </div>
+      )}
+
+      <style jsx global>{`
+        @keyframes slide-in {
+          from {
+            transform: translateX(-100%);
+            opacity: 0.4;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.2s ease;
+        }
+      `}</style>
     </nav>
   );
 }
