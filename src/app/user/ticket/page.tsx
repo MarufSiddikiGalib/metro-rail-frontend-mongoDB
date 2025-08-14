@@ -130,6 +130,10 @@ export default function TicketFarePage() {
 
   async function handleViewFare() {
     if (!fromStationId || !toStationId) return;
+     if (!departureDate) {
+    alert("Please select a departure date before viewing fare.");
+    return;
+  }
     setFareLoading(true);
     setFare(null);
     setDistance(null);
@@ -300,6 +304,7 @@ export default function TicketFarePage() {
                   type="date"
                   value={departureDate}
                   onChange={(e) => setDepartureDate(e.target.value)}
+                  required
                   className="ml-2 border border-gray-400 rounded px-1 py-[2px] text-sm text-[#222] focus:outline-none"
                 />
               </div>
