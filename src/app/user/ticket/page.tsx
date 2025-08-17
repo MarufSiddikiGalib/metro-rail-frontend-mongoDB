@@ -28,27 +28,27 @@ type TicketState = {
   returnDate?: string;
 };
 
-const LOCAL_KEY = "ticket_saved_state";
+//const LOCAL_KEY = "ticket_saved_state";
 
-function saveTicketState(state: TicketState) {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(state));
-  }
-}
+// function saveTicketState(state: TicketState) {
+//   if (typeof window !== "undefined") {
+//     localStorage.setItem(LOCAL_KEY, JSON.stringify(state));
+//   }
+// }
 
-function getTicketState(): TicketState | null {
-  if (typeof window !== "undefined") {
-    const data = localStorage.getItem(LOCAL_KEY);
-    if (data) return JSON.parse(data);
-  }
-  return null;
-}
+// function getTicketState(): TicketState | null {
+//   if (typeof window !== "undefined") {
+//     const data = localStorage.getItem(LOCAL_KEY);
+//     if (data) return JSON.parse(data);
+//   }
+//   return null;
+// }
 
-function clearTicketState() {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(LOCAL_KEY);
-  }
-}
+// function clearTicketState() {
+//   if (typeof window !== "undefined") {
+//     localStorage.removeItem(LOCAL_KEY);
+//   }
+// }
 
 // Dummy auth check
 function getLoggedInUser(): string | null {
@@ -80,7 +80,7 @@ export default function TicketFarePage() {
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
 
   // Ref to prevent double modal after login
-  const didAutoOpenRef = useRef(false);
+  //const didAutoOpenRef = useRef(false);
 
   // FETCH STATIONS and USER
   useEffect(() => {
