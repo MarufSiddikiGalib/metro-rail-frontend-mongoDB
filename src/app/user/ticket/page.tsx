@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState} from "react";
 import Navbar from "@/components/NavBar";
 import Type2Toggle from "@/components/Type2Toggle";
 import Type1Selector from "@/components/Type1Selector";
@@ -16,17 +16,17 @@ import {
   storeTransaction,
 } from "@/utils/api";
 
-type TicketState = {
-  type2: "OneWay" | "Round" | "MultiCity";
-  type1: "Economy" | "Business";
-  fromStationId?: string;
-  toStationId?: string;
-  traveller: { count: string; type: "Adult" | "Child" };
-  fare?: number;
-  distance?: number;
-  departureDate?: string;
-  returnDate?: string;
-};
+// type TicketState = {
+//   type2: "OneWay" | "Round" | "MultiCity";
+//   type1: "Economy" | "Business";
+//   fromStationId?: string;
+//   toStationId?: string;
+//   traveller: { count: string; type: "Adult" | "Child" };
+//   fare?: number;
+//   distance?: number;
+//   departureDate?: string;
+//   returnDate?: string;
+// };
 
 //const LOCAL_KEY = "ticket_saved_state";
 
