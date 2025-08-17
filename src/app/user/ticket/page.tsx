@@ -91,37 +91,37 @@ export default function TicketFarePage() {
   }, []);
 
   // RESTORE STATE IF COMING FROM LOGIN
-  useEffect(() => {
-    // If user is logged in, restore state and auto open modal
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    const fromLogin = params.get("from") === "login";
-    const user = getLoggedInUser();
+  // useEffect(() => {
+  //   // If user is logged in, restore state and auto open modal
+  //   if (typeof window === "undefined") return;
+  //   const params = new URLSearchParams(window.location.search);
+  //   const fromLogin = params.get("from") === "login";
+  //   const user = getLoggedInUser();
 
-    if (user && !didAutoOpenRef.current) {
-      const saved = getTicketState();
-      if (saved) {
-        setType2(saved.type2);
-        setType1(saved.type1);
-        setFromStationId(saved.fromStationId);
-        setToStationId(saved.toStationId);
-        setTraveller(saved.traveller);
-        setFare(saved.fare || null);
-        setDistance(saved.distance || null);
-        setDepartureDate(saved.departureDate || "");
-        setReturnDate(saved.returnDate || "");
-        setShowPassengerModal(true);
-        didAutoOpenRef.current = true;
-        clearTicketState();
-        // Remove ?from=login from URL for cleanliness
-        if (fromLogin) {
-          params.delete("from");
-          const newurl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
-          window.history.replaceState({}, "", newurl);
-        }
-      }
-    }
-  }, []);
+  //   if (user && !didAutoOpenRef.current) {
+  //     const saved = getTicketState();
+  //     if (saved) {
+  //       setType2(saved.type2);
+  //       setType1(saved.type1);
+  //       setFromStationId(saved.fromStationId);
+  //       setToStationId(saved.toStationId);
+  //       setTraveller(saved.traveller);
+  //       setFare(saved.fare || null);
+  //       setDistance(saved.distance || null);
+  //       setDepartureDate(saved.departureDate || "");
+  //       setReturnDate(saved.returnDate || "");
+  //       setShowPassengerModal(true);
+  //       didAutoOpenRef.current = true;
+  //       clearTicketState();
+  //       // Remove ?from=login from URL for cleanliness
+  //       if (fromLogin) {
+  //         params.delete("from");
+  //         const newurl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+  //         window.history.replaceState({}, "", newurl);
+  //       }
+  //     }
+  //   }
+  // }, []);
 
   function handleSwapStations() {
     setFromStationId(toStationId);
@@ -157,21 +157,21 @@ export default function TicketFarePage() {
 
   function handleViewTicket() {
     // Not logged in: Save state and redirect to login
-    if (!loggedInUser) {
-      saveTicketState({
-        type2,
-        type1,
-        fromStationId,
-        toStationId,
-        traveller,
-        fare: fare ?? undefined,
-        distance: distance ?? undefined,
-        departureDate,
-        returnDate,
-      });
-      window.location.href = "/user/login?from=ticket";
-      return;
-    }
+    // if (!loggedInUser) {
+    //   saveTicketState({
+    //     type2,
+    //     type1,
+    //     fromStationId,
+    //     toStationId,
+    //     traveller,
+    //     fare: fare ?? undefined,
+    //     distance: distance ?? undefined,
+    //     departureDate,
+    //     returnDate,
+    //   });
+    //   window.location.href = "/user/login?from=ticket";
+    //   return;
+    // }
     setShowPassengerModal(true);
   }
 
