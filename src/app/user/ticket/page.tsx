@@ -79,6 +79,8 @@ export default function TicketFarePage() {
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
 
+  const today = new Date().toISOString().slice(0, 10);
+
   // Ref to prevent double modal after login
   //const didAutoOpenRef = useRef(false);
 
@@ -305,6 +307,7 @@ export default function TicketFarePage() {
                   value={departureDate}
                   onChange={(e) => setDepartureDate(e.target.value)}
                   required
+                  min={today}
                   className="ml-2 border border-gray-400 rounded px-1 py-[2px] text-sm text-[#222] focus:outline-none"
                 />
               </div>
